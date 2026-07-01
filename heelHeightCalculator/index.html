@@ -249,13 +249,6 @@
       color: var(--maroon);
     }
 
-    .calibration-options {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
     .small {
       font-size: 0.88rem;
       color: var(--muted);
@@ -382,7 +375,7 @@
 <body>
   <header>
     <h1>Heel Height Difference Tracker</h1>
-    <p>Measure heel height difference from a smartphone photo</p>
+    <p>Measure the vertical heel height difference from a smartphone photo</p>
   </header>
 
   <main>
@@ -390,7 +383,7 @@
       <h2>Track heel height difference at home</h2>
       <p>
         Upload a photo of both heels, calibrate the image using a coin or shoe-size estimate,
-        then click the left and right heel points to estimate heel height difference.
+        then click the left and right heel points. The app will report the vertical height difference only.
       </p>
     </section>
 
@@ -502,15 +495,14 @@
           <table>
             <thead>
               <tr>
-                <th>Heel Height Difference</th>
-                <th>Straight-Line Distance</th>
-                <th>Pixels</th>
+                <th>Vertical Heel Height Difference</th>
+                <th>Vertical Pixels</th>
                 <th>Calibration</th>
               </tr>
             </thead>
             <tbody id="resultsBody">
               <tr>
-                <td colspan="4" class="small">No measurement yet.</td>
+                <td colspan="3" class="small">No measurement yet.</td>
               </tr>
             </tbody>
           </table>
@@ -600,15 +592,6 @@
     updateCalibrationVisibility();
 
     function estimateFootLengthCmFromShoeSize(size, sex) {
-      /*
-        Rough fallback estimate.
-        Uses common US shoe-size conversion logic:
-        estimated foot length = last length - 2/3 inch.
-        Men's last length inches ≈ (size + 24) / 3.
-        Women's last length inches ≈ (size + 23) / 3.
-        This is intentionally labeled as an estimate.
-      */
-
       let lastLengthInches;
 
       if (sex === "male") {
@@ -642,7 +625,7 @@
           setStatus("Shoe-size calibration mode: click heel, then toe, on one foot.");
         }
       } else if (mode === "measure") {
-        modeText.textContent = "3. Measure heel height";
+        modeText.textContent = "3. Measure vertical heel height";
         instructionText.textContent = "Click the left heel point, then the right heel point.";
         setStatus("Measurement mode: click left heel point, then right heel point.");
       } else {
@@ -685,13 +668,42 @@
       ctx.fillText(label, point.x + 10, point.y - 10);
     }
 
-    function drawLine(a, b, color = "#002878") {
+    function drawLine(a, b, color = "#002878", width = 4) {
+      ctx.save();
       ctx.beginPath();
       ctx.moveTo(a.x, a.y);
       ctx.lineTo(b.x, b.y);
-      ctx.lineWidth = 4;
+      ctx.lineWidth = width;
       ctx.strokeStyle = color;
       ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawDashedLine(a, b, color = "#002878", width = 3, dash = [10, 8]) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.setLineDash(dash);
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.lineWidth = width;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawTextWithBackground(text, x, y, color = "#002878") {
+      ctx.save();
+      ctx.font = "bold 20px Arial";
+      const padding = 6;
+      const metrics = ctx.measureText(text);
+      const textHeight = 24;
+
+      ctx.fillStyle = "rgba(255,255,255,0.85)";
+      ctx.fillRect(x - padding, y - textHeight + padding, metrics.width + padding * 2, textHeight + padding);
+
+      ctx.fillStyle = color;
+      ctx.fillText(text, x, y);
+      ctx.restore();
     }
 
     function redraw() {
@@ -701,7 +713,7 @@
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       if (calibration.pointA && calibration.pointB) {
-        drawLine(calibration.pointA, calibration.pointB, "#d2b000");
+        drawLine(calibration.pointA, calibration.pointB, "#d2b000", 4);
         drawPoint(calibration.pointA, "C1", "#d2b000");
         drawPoint(calibration.pointB, "C2", "#d2b000");
       } else if (calibration.pointA) {
@@ -709,16 +721,41 @@
       }
 
       if (measurement) {
-        drawLine(measurement.leftHeel, measurement.rightHeel, "#002878");
-        drawPoint(measurement.leftHeel, "Left heel", "#002878");
-        drawPoint(measurement.rightHeel, "Right heel", "#98002e");
+        const leftHeel = measurement.leftHeel;
+        const rightHeel = measurement.rightHeel;
 
-        const midX = (measurement.leftHeel.x + measurement.rightHeel.x) / 2;
-        const midY = (measurement.leftHeel.y + measurement.rightHeel.y) / 2;
+        /*
+          The dotted line between the two clicked heel points is only a reference.
+          The app displays the true vertical difference using the triangle vertical leg.
+        */
+        const cornerPoint = {
+          x: rightHeel.x,
+          y: leftHeel.y
+        };
 
-        ctx.font = "bold 18px Arial";
-        ctx.fillStyle = "#002878";
-        ctx.fillText(formatNumber(measurement.verticalDifferenceCm, 2) + " cm", midX + 8, midY + 8);
+        drawDashedLine(leftHeel, rightHeel, "#002878", 3, [10, 8]);
+        drawLine(leftHeel, cornerPoint, "#667085", 3);
+        drawLine(cornerPoint, rightHeel, "#98002e", 5);
+
+        drawPoint(leftHeel, "Left heel", "#002878");
+        drawPoint(rightHeel, "Right heel", "#98002e");
+
+        ctx.save();
+        ctx.setLineDash([6, 6]);
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#98002e";
+        ctx.strokeRect(cornerPoint.x - 12, cornerPoint.y - 12, 12, 12);
+        ctx.restore();
+
+        const verticalLabelX = cornerPoint.x + 12;
+        const verticalLabelY = (cornerPoint.y + rightHeel.y) / 2;
+
+        drawTextWithBackground(
+          formatNumber(measurement.verticalDifferenceCm, 2) + " cm vertical",
+          verticalLabelX,
+          verticalLabelY,
+          "#98002e"
+        );
       }
 
       pendingPoints.forEach((p, idx) => {
@@ -728,15 +765,14 @@
 
     function updateResultsTable() {
       if (!measurement) {
-        resultsBody.innerHTML = '<tr><td colspan="4" class="small">No measurement yet.</td></tr>';
+        resultsBody.innerHTML = '<tr><td colspan="3" class="small">No measurement yet.</td></tr>';
         return;
       }
 
       resultsBody.innerHTML = `
         <tr>
           <td><strong>${formatNumber(measurement.verticalDifferenceCm, 2)} cm</strong></td>
-          <td>${formatNumber(measurement.straightLineCm, 2)} cm</td>
-          <td>${formatNumber(measurement.straightLinePx, 1)} px</td>
+          <td>${formatNumber(measurement.verticalDifferencePx, 1)} px</td>
           <td>${calibration.label} — ${formatNumber(calibration.pixelsPerCm, 2)} px/cm</td>
         </tr>
       `;
@@ -826,9 +862,11 @@
 
         const straightLinePx = Math.sqrt(dx * dx + dy * dy);
         const verticalDifferencePx = Math.abs(dy);
+        const horizontalDifferencePx = Math.abs(dx);
 
         const straightLineCm = straightLinePx / calibration.pixelsPerCm;
         const verticalDifferenceCm = verticalDifferencePx / calibration.pixelsPerCm;
+        const horizontalDifferenceCm = horizontalDifferencePx / calibration.pixelsPerCm;
 
         measurement = {
           label: patientNameInput.value || "",
@@ -836,15 +874,17 @@
           leftHeel,
           rightHeel,
           straightLinePx,
+          horizontalDifferencePx,
           verticalDifferencePx,
           straightLineCm,
+          horizontalDifferenceCm,
           verticalDifferenceCm,
           calibrationLabel: calibration.label,
           pixelsPerCm: calibration.pixelsPerCm
         };
 
         setStatus(
-          "Heel height difference measured: " +
+          "Vertical heel height difference measured: " +
           formatNumber(verticalDifferenceCm, 2) +
           " cm.",
           "good"
@@ -1017,10 +1057,10 @@
         [
           "Label",
           "Photo Date",
-          "Heel height difference cm",
-          "Straight-line distance cm",
-          "Straight-line distance pixels",
+          "Vertical heel height difference cm",
           "Vertical difference pixels",
+          "Horizontal difference pixels",
+          "Reference straight-line pixels",
           "Calibration method",
           "Pixels per cm"
         ],
@@ -1028,9 +1068,9 @@
           measurement.label,
           measurement.date,
           formatNumber(measurement.verticalDifferenceCm, 3),
-          formatNumber(measurement.straightLineCm, 3),
-          formatNumber(measurement.straightLinePx, 2),
           formatNumber(measurement.verticalDifferencePx, 2),
+          formatNumber(measurement.horizontalDifferencePx, 2),
+          formatNumber(measurement.straightLinePx, 2),
           measurement.calibrationLabel,
           formatNumber(measurement.pixelsPerCm, 5)
         ]
@@ -1045,7 +1085,7 @@
 
       const link = document.createElement("a");
       link.href = url;
-      link.download = "heel-height-difference-measurement.csv";
+      link.download = "vertical-heel-height-difference-measurement.csv";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -1063,7 +1103,7 @@
       redraw();
 
       const link = document.createElement("a");
-      link.download = "heel-height-marked-image.png";
+      link.download = "vertical-heel-height-marked-image.png";
       link.href = canvas.toDataURL("image/png");
       document.body.appendChild(link);
       link.click();
