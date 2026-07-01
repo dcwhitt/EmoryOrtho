@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Rehabilitation – Rehab Videos</title>
+
+  <style>
+    :root {
+      --navy: #002878;
+      --gold: #d2b000;
+      --maroon: #98002e;
+      --text: #333333;
+      --light: #f8f8f8;
+      --border: #d8d8d8;
+      --white: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background: #ffffff;
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--navy);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      background: var(--navy);
+      padding: 0.5rem 1rem;
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+
+    .nav {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+    }
+
+    .nav a {
+      color: white;
+      padding: 0.65rem 0.8rem;
+      font-weight: 600;
+      border-radius: 4px;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      background: rgba(255,255,255,0.12);
+      color: var(--gold);
+      text-decoration: none;
+    }
+
+    .hero {
+      background:
+        linear-gradient(rgba(7,13,40,0.72), rgba(7,13,40,0.72)),
+        url("/wp-content/uploads/2020/04/brad-huchteman-sR1Kz2auNJE-unsplash-scaled.jpg");
+      background-size: cover;
+      background-position: bottom center;
+      color: white;
+      text-align: center;
+      padding: 5rem 1rem;
+    }
+
+    .hero-box {
+      background: rgba(30,115,190,0.68);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+      border-radius: 8px;
+    }
+
+    .hero h1 {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 8px;
+      font-size: clamp(2rem, 5vw, 4rem);
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 0;
+    }
+
+    main {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    .intro-card {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 1.5rem;
+      align-items: center;
+      background: white;
+      border-radius: 10px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    .intro-card img {
+      width: 80px;
+      height: 80px;
+      object-fit: contain;
+      display: block;
+      margin: auto;
+    }
+
+    .tabs {
+      margin-top: 1rem;
+    }
+
+    .tab-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+      margin-bottom: 1rem;
+    }
+
+    .tab-button {
+      border: 1.5px solid rgba(0,40,120,0.24);
+      background: white;
+      color: rgba(0,40,120,0.65);
+      padding: 0.6rem;
+      font-size: 1rem;
+      cursor: pointer;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .tab-button:hover,
+    .tab-button.active {
+      background: var(--navy);
+      color: white;
+    }
+
+    .tab-panel {
+      display: none;
+      padding: 1.5rem;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: white;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    h2, h3, h4 {
+      color: var(--navy);
+      margin-top: 0;
+    }
+
+    .warning {
+      color: var(--maroon);
+      font-weight: 700;
+    }
+
+    .section-row {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.5rem;
+      padding: 1.2rem 0;
+      border-top: 1px solid #eeeeee;
+    }
+
+    .section-row:first-of-type {
+      border-top: none;
+    }
+
+    .section-row h4 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .exercise-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr 360px;
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid #eeeeee;
+      align-items: start;
+    }
+
+    .exercise-grid:first-of-type {
+      border-top: none;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 8px;
+      background: #000;
+    }
+
+    .video-wrapper iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+
+    .image-center {
+      text-align: center;
+      margin: 1rem 0 2rem;
+    }
+
+    .image-center img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+    }
+
+    .small-image img {
+      max-width: 320px;
+    }
+
+    .google-form-card {
+      max-width: 720px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--light);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      text-align: center;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+    }
+
+    .google-form-card h3 {
+      margin-bottom: 0.75rem;
+      font-size: 1.7rem;
+    }
+
+    .google-form-card p {
+      max-width: 620px;
+      margin: 0.75rem auto;
+    }
+
+    .google-form-button {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.95rem 1.5rem;
+      background: var(--navy);
+      color: white;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    .google-form-button:hover {
+      background: #0748ca;
+      color: white;
+      text-decoration: none;
+    }
+
+    .google-form-note {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 1rem;
+    }
+
+    .footer-links {
+      border-top: 2px solid rgba(210,142,0,0.69);
+      border-bottom: 2px solid rgba(210,142,0,0.69);
+      padding: 1.5rem 0;
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1rem;
+    }
+
+    .footer-card {
+      background: var(--light);
+      padding: 1.25rem;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .footer-card img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-card h3 {
+      font-size: 1rem;
+      margin: 0;
+      color: #444444;
+    }
+
+    footer {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 1rem;
+      text-align: center;
+      font-size: 0.75rem;
+      color: rgba(2,1,1,0.71);
+    }
+
+    .copyright {
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 900px) {
+      .exercise-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-row {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-links {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 700px) {
+      .intro-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .tab-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .hero h1 {
+        letter-spacing: 3px;
+      }
+
+      .footer-links {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <nav class="nav" aria-label="Main navigation">
+    <a href="/home/">Home</a>
+    <a href="/acute-knee-injury/">Acute Knee Injury</a>
+    <a href="/preparing-for-surgery/">Preparing for Surgery</a>
+    <a href="/surgery/">Surgery</a>
+    <a href="/rehabilitation/" class="active">Rehabilitation</a>
+    <a href="/research/">Research</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="hero-box">
+    <h1>Rehabilitation</h1>
+    <p>Advice for a swift recovery</p>
+  </div>
+</section>
+
+<main>
+  <section class="intro-card">
+    <img src="/wp-content/uploads/2020/04/rehabilation-1.png" alt="Rehabilitation icon">
+    <p>
+      Optimizing your recovery following ACL surgery is our goal. Click through the following links for information to facilitate that recovery. If you have any questions, do not hesitate to reach out to your healthcare team.
+    </p>
+  </section>
+
+  <section class="tabs">
+    <div class="tab-buttons" role="tablist">
+      <button class="tab-button active" data-tab="straight-leg-lift">Straight Leg Lift</button>
+      <button class="tab-button" data-tab="exercises">Exercises</button>
+      <button class="tab-button" data-tab="running-progression">Running Progression</button>
+      <button class="tab-button" data-tab="tracking-heel-height">Tracking Heel Height</button>
+    </div>
+
+    <section id="straight-leg-lift" class="tab-panel active">
+      <h2>Straight Leg Lift Test</h2>
+
+      <div class="section-row">
+        <h4>Overview</h4>
+        <div>
+          <p>
+            Dr. X recommends all of his patients start attempting a straight leg lift test the day following surgery to help with recovery.
+          </p>
+          <p>
+            Be sure to record when you are able to do a straight leg lift in your
+            <a href="/preparing-for-surgery/#patientJournalAnchor">Patient Journal</a>.
+          </p>
+          <div class="image-center small-image">
+            <img src="/wp-content/uploads/2020/04/straight-leg-raises-SLR.png" alt="Straight leg raise illustration">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <h4>How to do it?</h4>
+        <p>
+          With your leg resting on your bed or a flat surface, pull your toes back, push the back of your knee into the bed, tighten your quad, and then lift your heel off the bed.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>When to do it?</h4>
+        <p>
+          Begin attempting the straight leg lift test on the day after surgery.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>How often to do it?</h4>
+        <p>
+          Starting the day after surgery, attempt the straight leg lift test three times each day: once at breakfast, once at lunch, and once at dinner.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>When to record results?</h4>
+        <p>
+          A positive test consists of successfully lifting your heel off the bed. Please record the first date and time you are able to do this after surgery in the post-op journal or the
+          <a href="/preparing-for-surgery/#patientJournalAnchor">fuse: Post-Op Journal app</a>.
+        </p>
+      </div>
+    </section>
+
+    <section id="exercises" class="tab-panel">
+      <h2>Rehabilitation Exercises</h2>
+      <p>
+        These exercises are the same ones that were recommended prior to surgery, with the addition of
+        <strong class="warning">Exercise 4: Extension with Over Pressure.</strong>
+      </p>
+
+      <div class="exercise-grid">
+        <h4>Advice from Dr. X</h4>
+        <p>
+          When you hurt your ACL, it is very important to get your motion back <strong>immediately</strong>. Without your motion, we cannot get your strength back. Often, you will go to the ER, they will put you in a knee immobilizer, and tell you to go see someone. <strong>Take that immobilizer off</strong>, get that quad to fire with full extension, and get your motion back.
+        </p>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/sa2RoxuvDjA" title="Advice from Dr. X" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise-grid">
+        <h4>Exercise 1: Prone Hang</h4>
+        <div>
+          <p>
+            After an ACL injury, we need to get the injured knee straight. Without getting it straight, you cannot fire the muscle. <strong>This should be the top priority.</strong>
+          </p>
+          <p>
+            Lay down on a bed or table with your kneecaps off the edge. You may notice the heel on your injured leg is above the heel on the healthy leg. This is what you are working to correct.
+          </p>
+          <p>
+            While lying off the bed, gravity will help stretch the leg. Lay like this for about <strong>20 minutes</strong> and your hamstring should relax. If you need more pressure, place the uninjured foot on top of the ankle of the injured leg.
+          </p>
+          <p><strong>Recommendation: Prone hang for 20 minutes, 2–3 times per day.</strong></p>
+        </div>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/xmIwDazehlE" title="Prone Hang" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise-grid">
+        <h4>Exercise 2: Short Arc Quad</h4>
+        <div>
+          <p>
+            After ACL injury, it is important to immediately work on getting the quad to function.
+          </p>
+          <p>
+            Place your finger on the VMO, pull your foot back, and tighten your quad. Your finger should be pushed back by the muscle contraction when performed properly. Compare this to your uninjured leg.
+          </p>
+          <p>
+            Once you can do that, place a cushion or pillow under your knee. Pull your toes back, place your finger in the same location, and straighten your leg all the way out until the quad squeezes.
+          </p>
+          <p><strong>Recommendation: Do 5–10 short arc quad repetitions, 2–4 times per day.</strong></p>
+        </div>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/frfwqSSZwRw" title="Short Arc Quad" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise-grid">
+        <h4>Exercise 3: Active Assisted Flexion</h4>
+        <div>
+          <p>
+            After ACL injury, we also need to regain knee bending. Once you can get the knee to about 95–100°, you can get on a stationary bike for further rehab.
+          </p>
+          <p>
+            While sitting on a table, couch, or chair, take your good leg, place it on top of the injured leg, and push back to bend the injured knee. Hold for about 5 seconds and repeat.
+          </p>
+          <p><strong>Recommendation: Do 10 repetitions, holding for 5 seconds each, 2–3 times per day.</strong></p>
+        </div>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/IEHIP8_01Hk" title="Active Assisted Flexion" allowfullscreen></iframe>
+        </div>
+      </div>
+
+      <div class="exercise-grid">
+        <h4>Exercise 4: Extension with Over Pressure</h4>
+        <div>
+          <p>
+            Place one hand where the small cut on the front of your knee is, lock your elbow, and push down. With the other hand placed on your ankle, pull up.
+          </p>
+          <p><strong>Recommendation: Do 4 sets for 20 seconds at least 3 times per day.</strong></p>
+        </div>
+        <div class="video-wrapper">
+          <iframe src="https://www.youtube.com/embed/dAweL3lly_Y" title="Extension with Over Pressure" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+    <section id="running-progression" class="tab-panel">
+      <h2>Running Progression</h2>
+      <p class="warning">You may start jogging when cleared by your doctor, usually around 3 months post-op.</p>
+      <p>
+        Expect to be sore and to notice swelling for a few days when first increasing your activity. You may ice and take naproxen as needed if approved by your healthcare team.
+      </p>
+
+      <div class="section-row">
+        <h4>How often can I jog?</h4>
+        <p>
+          Start by jogging no more than 2 days per week. You should have at least one day of rest between jogging sessions.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>How should I begin jogging?</h4>
+        <div>
+          <p>
+            Jog the straights of a track and walk the curves for 8 laps, or 2 miles. Increase your distance each time you attempt jogging. Build up until you can jog 8 consecutive laps without stopping over the next 4–6 weeks.
+          </p>
+          <div class="image-center">
+            <img src="/wp-content/uploads/2020/04/jog.png" alt="Jogging progression diagram">
+          </div>
+        </div>
+      </div>
+
+      <div class="section-row">
+        <h4>What should I do on my off days?</h4>
+        <p>
+          We encourage you to cross train on a stationary bike or swim in a pool on your off days.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>When can I start sprinting?</h4>
+        <p>
+          When able to jog 2 miles, you may then start sprinting, usually around 4.5–5 months after ACL reconstruction.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>What is the best way to get back into sprints?</h4>
+        <p>
+          Start by accelerating for 10–15 yards, sprinting for 10–15 yards, and decelerating for 10–15 yards. Do not abruptly stop or stop quickly. Build up to 10 sprint intervals.
+        </p>
+      </div>
+
+      <p class="warning">
+        Do not complete hard cutting activities until 6 months or until cleared by your doctor.
+      </p>
+    </section>
+
+    <section id="tracking-heel-height" class="tab-panel">
+      <h2>Tracking Heel Height Difference</h2>
+      <p>
+        Measuring heel height difference is a test that we typically do in the office to measure recovery after surgery. You can also measure and track your progress at home using a smartphone camera.
+      </p>
+
+      <div class="section-row">
+        <h4 class="warning">Need</h4>
+        <p>
+          2 coins, scotch tape, a smartphone with camera, and a family member or friend to help with the measurement.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>Step 1</h4>
+        <p>Remove shoes and socks.</p>
+      </div>
+
+      <div class="image-center small-image">
+        <img src="/wp-content/uploads/2020/04/IMG_20200415_102453-225x300.jpg" alt="Remove shoes and socks">
+      </div>
+
+      <div class="section-row">
+        <h4>Step 2</h4>
+        <p>
+          Lie on your belly on a <strong class="warning">hard surface</strong>, such as a table or counter, with your kneecaps completely off the edge of the table and your lower legs hanging off the table.
+        </p>
+      </div>
+
+      <div class="image-center">
+        <img src="/wp-content/uploads/2020/04/kneeHang-1-300x188.png" alt="Knees off table edge">
+      </div>
+
+      <div class="section-row">
+        <h4>Step 3</h4>
+        <p>
+          Level out your hips so they are even. Roll from side to side to adjust.
+        </p>
+      </div>
+
+      <div class="image-center small-image">
+        <img src="/wp-content/uploads/2020/04/levelHips-214x300.png" alt="Level hips">
+      </div>
+
+      <div class="section-row">
+        <h4>Step 4</h4>
+        <p>
+          Have your helper tape a quarter to the bottom side of each heel. Try to place the coin on the same spot on each foot.
+        </p>
+      </div>
+
+      <div class="image-center">
+        <img src="/wp-content/uploads/2020/04/feet-close-1-300x159.png" alt="Coins taped to heels">
+      </div>
+
+      <div class="section-row">
+        <h4>Step 5</h4>
+        <p>
+          With your heels close together, but not touching, take a picture with the camera facing the bottom of your feet, not from the side. Make sure the picture is straight on and avoid angles or tilt.
+        </p>
+      </div>
+
+      <div class="image-center small-image">
+        <img src="/wp-content/uploads/2020/04/feet-1-251x300.png" alt="Photo angle for heel height">
+      </div>
+
+      <div class="section-row">
+        <h4>Step 6</h4>
+        <p>
+          Save the image clearly and make sure the coins and both heels are visible.
+        </p>
+      </div>
+
+      <div class="section-row">
+        <h4>Step 7</h4>
+        <p>
+          Upload the picture using the Google Form below. The form will open in a new tab.
+        </p>
+      </div>
+
+      <div class="google-form-card">
+        <h3>Upload Your Image</h3>
+        <p>
+          Click the button below to complete the secure upload form. You may need to sign in to Google to upload the image.
+        </p>
+
+        <a
+          class="google-form-button"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSe0pbEk1qva6LSci-9l_YFFlUa_QTERkkMF5wxJ7M-4Xw0SWg/viewform?usp=sharing&ouid=101230915591147438937"
+          target="_blank"
+          rel="noopener"
+        >
+          Open Image Upload Form
+        </a>
+
+        <p class="google-form-note">
+          Image size should be less than 15 MB. Make sure both coins and both heels are visible before submitting.
+        </p>
+      </div>
+    </section>
+  </section>
+
+  <section class="footer-links">
+    <div class="footer-card">
+      <a href="/acute-knee-injury/">
+        <img src="/wp-content/uploads/elementor/thumbs/knee-pain-oob1ov438bkuf321q8myr7dif6u7iy7my71k9kmmb8.png" alt="Acute knee injury">
+        <h3>Acute Knee Injury</h3>
+      </a>
+    </div>
+
+    <div class="footer-card">
+      <a href="/preparing-for-surgery/">
+        <img src="/wp-content/uploads/elementor/thumbs/schedule_80px-onor8o1x85te04rui5p2s1gj8x2wok2qiweqnhg0ac.png" alt="Preparing for surgery">
+        <h3>Preparing for Surgery</h3>
+      </a>
+    </div>
+
+    <div class="footer-card">
+      <a href="/surgery/">
+        <img src="/wp-content/uploads/elementor/thumbs/hospital_80px-onoqrzf1x0z5xb0axg2h0r0znpbd1yu98bjgzo6kqc.png" alt="Surgery">
+        <h3>Surgery</h3>
+      </a>
+    </div>
+
+    <div class="footer-card">
+      <a href="/rehabilitation/">
+        <img src="/wp-content/uploads/elementor/thumbs/rehabilation-1-onor28tmix0uo23q0dquqnt544qm30krn3xaleyut0.png" alt="Rehabilitation">
+        <h3>Rehabilitation</h3>
+      </a>
+    </div>
+
+    <div class="footer-card">
+      <a href="/research/">
+        <img src="/wp-content/uploads/elementor/thumbs/microscope-oubndcsralajogovkzk1ovjfcgzg3q827tqc7hhl6c.png" alt="Research">
+        <h3>Research</h3>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>
+    This website is provided as a courtesy to patients. The website alone does not constitute medical advice and does not create a physician/patient relationship. This website does not endorse or recommend any specific commercial product or service. This website is provided solely for personal and private use of individuals accessing this information.
+  </p>
+
+  <p class="copyright">
+    Copyright © 2026 | Created by Daniel Whittingslow, Emily DeMaio, &amp; Rebecca Haley
+  </p>
+</footer>
+
+<script>
+  const buttons = document.querySelectorAll(".tab-button");
+  const panels = document.querySelectorAll(".tab-panel");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const target = button.dataset.tab;
+
+      buttons.forEach((btn) => btn.classList.remove("active"));
+      panels.forEach((panel) => panel.classList.remove("active"));
+
+      button.classList.add("active");
+      document.getElementById(target).classList.add("active");
+    });
+  });
+</script>
+
+</body>
+</html>
