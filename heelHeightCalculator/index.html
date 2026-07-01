@@ -102,6 +102,32 @@
       margin-bottom: 8px;
     }
 
+    .instruction-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .instruction-image {
+      text-align: center;
+    }
+
+    .instruction-image img {
+      width: 100%;
+      max-width: 520px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+      background: white;
+    }
+
+    .instruction-image p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
     .notice {
       background: #fff8e5;
       border-left: 5px solid var(--gold);
@@ -342,6 +368,10 @@
         grid-template-columns: 1fr;
       }
 
+      .instruction-layout {
+        grid-template-columns: 1fr;
+      }
+
       .canvas-wrap {
         min-height: 380px;
       }
@@ -365,15 +395,25 @@
     </section>
 
     <section class="instruction-card">
-      <h2>How to take the photo</h2>
-      <ol>
-        <li>Lie on your stomach with both knees just off the edge of a table, bed, or firm surface.</li>
-        <li>Let both lower legs hang freely.</li>
-        <li>Keep hips level and heels close together, but not touching.</li>
-        <li>Place a coin flat on or near the heel if possible.</li>
-        <li>Take the picture straight-on from the bottom of the feet, not from the side.</li>
-        <li>Make sure both heels and the calibration object are visible.</li>
-      </ol>
+      <div class="instruction-layout">
+        <div>
+          <h2>How to take the photo</h2>
+          <ol>
+            <li>Lie on your stomach with both knees just off the edge of a table, bed, or firm surface.</li>
+            <li>Let both lower legs hang freely with the legs straight and relaxed.</li>
+            <li>Keep hips level and heels close together, but not touching.</li>
+            <li>Place one coin flat on or near one heel if possible. Tape it flat so it does not tilt.</li>
+            <li>Have a partner take the photo from the bottom of the feet, straight-on and not from the side.</li>
+            <li>If you do not have someone to help, prop up your phone and use the phone timer.</li>
+            <li>Make sure both heels and the calibration coin are visible in the image.</li>
+          </ol>
+        </div>
+
+        <div class="instruction-image">
+          <img src="images/hh%20instructions.png" alt="Line art instructions showing how to take a heel height photo with one coin taped to the heel">
+          <p>Example setup: legs straight, heels visible, one coin taped flat to one heel.</p>
+        </div>
+      </div>
     </section>
 
     <div class="notice">
